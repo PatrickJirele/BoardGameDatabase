@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='createStyle.css') }}">
+</head>
+<body>
+    <h1>ADD A NEW BOARD GAME!</h1>
+    <div id="create-container">
+        <form action="/create" method='POST'>
+            <label for="Name">Name:</label>
+            <input type="text" name="Name">
+            <br>
+            <label for="Price">Price:</label>
+            <input type="number" name="Price">
+            <br>
+            <label for="Players">Players:</label>
+            <input type="text" name="Players">
+            <br>
+            <label for="PlayTime">Play Time:</label>
+            <input type="text" name="PlayTime">
+            <br>
+            <label for="Link">Link:</label>
+            <input type="text" name="Link">
+            <br>
+        <input type="submit" name="submit">
+        </form>
+    </div>
+</body>
+</html>

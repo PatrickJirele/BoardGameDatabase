@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Update Game</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='updateStyle.css') }}">
+</head>
+<body>
+    <h1>UPDATE A BOARD GAME'S INFO!</h1>
+    <div id="update-container">
+        <form action="/update/{{ID}}" method='POST'>
+            <label for="Name">Name:</label>
+            <input type="text" name="Name" value="{{game.Name}}">
+            <br>
+            <label for="Price">Price:</label>
+            <input type="number" name="Price" value="{{game.Price}}">
+            <br>
+            <label for="Players">Players:</label>
+            <input type="text" name="Players" value="{{game.Players}}">
+            <br>
+            <label for="PlayTime">Play Time:</label>
+            <input type="text" name="PlayTime" value="{{game.PlayTime}}">
+            <br>
+            <label for="Link">Link:</label>
+            <input type="text" name="Link" value="{{game.Link}}">
+            <br>
+        <input type="submit" name="submit">
+    </form>
+    </div>
+</body>
+</html>

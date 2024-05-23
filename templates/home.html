@@ -2,9 +2,167 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Home</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='homeStyle.css') }}">
 </head>
+<script type="text/javascript">
+    function confirmDelete(event) {
+        if (!confirm("Are you sure you want to delete this game?")) {
+            event.preventDefault();
+        }
+    }
+</script>
 <body>
+    <h1>WELCOME TO PAT'S BOARDGAME SHEET!</h1>
+    <div class="create-button-container">
+        <form action="/create" method="GET">
+            <button type="submit">Create New Entry</button>
+        </form>
+    </div>
+    <div class="search-container">
+        <input type="text" id="search-input" placeholder="Search..">
+    </div>
+    <div id="container">
+        <table id="game_table">
+            <tr>
+                <th onclick="sortTable('ID', this)" class="${currentSortColumn === 'ID' ? currentSortOrder : ''}">ID</th>
+                <th onclick="sortTable('Name', this)" class="${currentSortColumn === 'Name' ? currentSortOrder : ''}">Name</th>
+                <th onclick="sortTable('Price', this)" class="${currentSortColumn === 'Price' ? currentSortOrder : ''}">Price</th>
+                <th onclick="sortTable('Players', this)" class="${currentSortColumn === 'Players' ? currentSortOrder : ''}">Players</th>
+                <th onclick="sortTable('PlayTime', this)" class="${currentSortColumn === 'PlayTime' ? currentSortOrder : ''}">Play Time</th>
+                <th>Link</th>
+                <th>Update</th>
+                <th>Delete</th>
+            </tr>
+            {% for game in games %}
+            <tr>
+                <td>{{ game.ID }}</td>
+                <td>{{ game.Name }}</td>
+                <td>${{ game.Price }}</td>
+                <td>{{ game.Players }}</td>
+                <td>{{ game.PlayTime }} Minutes</td>
+                <td>
+                    <a href="{{ game.Link }}" target="_blank">Click For Link</a>
+                </td>
+                <td>
+                    <form action="/update/{{game.ID}}" method='GET'>
+                        <input type="submit" value="UPDATE">
+                    </form>
+                </td>
+                <td>
+                <form action="/delete/{{game.ID}}" method='POST' onsubmit="confirmDelete(event)">
+                        <input type="submit" value="DELETE">
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+<script>
+    const searchInput = document.getElementById('search-input');
+    const gameTable = document.getElementById('game_table');
 
+    searchInput.addEventListener('input', function() {
+        const searchTerm = this.value.trim();
+        fetchSearchResults(searchTerm);
+    });
+
+    function fetchSearchResults(searchTerm) {
+        fetch('/search', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: `search_term=${searchTerm}`
+        })
+        .then(response => response.json())
+        .then(games => {
+            updateTable(games);
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
+    function updateTable(games) {
+        const tableBody = gameTable.tBodies[0];
+        tableBody.innerHTML = '';
+
+        if (games.length === 0) {
+            const row = document.createElement('tr');
+            row.innerHTML = '<td colspan="8">No results found</td>';
+            tableBody.appendChild(row);
+        } else {
+            const labelRow = document.createElement('tr');
+            labelRow.innerHTML = `
+                <th onclick="sortTable('ID', this)" class="${currentSortColumn === 'ID' ? currentSortOrder : ''}">ID</th>
+                <th onclick="sortTable('Name', this)" class="${currentSortColumn === 'Name' ? currentSortOrder : ''}">Name</th>
+                <th onclick="sortTable('Price', this)" class="${currentSortColumn === 'Price' ? currentSortOrder : ''}">Price</th>
+                <th onclick="sortTable('Players', this)" class="${currentSortColumn === 'Players' ? currentSortOrder : ''}">Players</th>
+                <th onclick="sortTable('PlayTime', this)" class="${currentSortColumn === 'PlayTime' ? currentSortOrder : ''}">Play Time</th>
+                <th>Link</th>
+                <th>Update</th>
+                <th>Delete</th>
+            `;
+            tableBody.appendChild(labelRow);
+            games.forEach(game => {
+                const displayRow = document.createElement('tr');
+                displayRow.innerHTML = `
+                    <td>${game.ID}</td>
+                    <td>${game.Name}</td>
+                    <td>$${game.Price}</td>
+                    <td>${game.Players}</td>
+                    <td>${game.PlayTime} Minutes</td>
+                    <td><a href="${game.Link}" target="_blank">Click For Link</a></td>
+                    <td>
+                        <form action="/update/${game.ID}" method="GET">
+                            <input type="submit" value="UPDATE">
+                        </form>
+                    </td>
+                    <td>
+                        <form action="/delete/${game.ID}" method="POST" onsubmit="confirmDelete(event)">
+                            <input type="submit" value="DELETE">
+                        </form>
+                    </td>
+                `;
+                tableBody.appendChild(displayRow);
+            });
+        }
+    }
+    let currentSortColumn = null;
+    let currentSortOrder = 'asc';
+
+    function sortTable(column, headerCell) {
+        // Clear sorting styles
+        const headers = document.querySelectorAll('th');
+        headers.forEach(header => {
+            header.classList.remove('asc', 'desc');
+        });
+
+        // Toggle sort order
+        if (currentSortColumn === column) {
+            currentSortOrder = currentSortOrder === 'asc' ? 'desc' : 'asc';
+        } else {
+            currentSortColumn = column;
+            currentSortOrder = 'asc';
+        }
+
+        // Apply sorting styles
+        headerCell.classList.add(currentSortOrder);
+
+        // Fetch sorted data from the server
+        fetch('/sort', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: `column=${column}&order=${currentSortOrder}`
+        })
+        .then(response => response.json())
+        .then(games => {
+            updateTable(games);
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
+</script>
 </body>
 </html>
