@@ -93,7 +93,7 @@ def update(gameID):
         Link = request.form['Link']
 
         results.Name = Name
-        results.Age = Price
+        results.Price = Price
         results.Players = Players
         results.PlayTime = PlayTime
         results.Link = Link
