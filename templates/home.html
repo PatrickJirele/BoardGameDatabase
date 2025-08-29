@@ -14,6 +14,7 @@
 </script>
 <body>
     <h1>WELCOME TO PAT'S BOARDGAME SHEET!</h1>
+    <h5>*Want is 1-10, 10 being most*</h5>
     <div class="create-button-container">
         <form action="/create" method="GET">
             <button type="submit">Create New Entry</button>
@@ -29,6 +30,7 @@
                 <th onclick="sortTable('Name', this)" class="${currentSortColumn === 'Name' ? currentSortOrder : ''}">Name</th>
                 <th onclick="sortTable('Price', this)" class="${currentSortColumn === 'Price' ? currentSortOrder : ''}">Price</th>
                 <th onclick="sortTable('Players', this)" class="${currentSortColumn === 'Players' ? currentSortOrder : ''}">Players</th>
+                <th onclick="sortTable('Want', this)" class="${currentSortColumn === 'Want' ? currentSortOrder : ''}">Want</th>
                 <th onclick="sortTable('PlayTime', this)" class="${currentSortColumn === 'PlayTime' ? currentSortOrder : ''}">Play Time</th>
                 <th>Link</th>
                 <th>Update</th>
@@ -40,6 +42,7 @@
                 <td>{{ game.Name }}</td>
                 <td>${{ game.Price }}</td>
                 <td>{{ game.Players }}</td>
+                <td>{{ game.Want }}</td>
                 <td>{{ game.PlayTime }} Minutes</td>
                 <td>
                     <a href="{{ game.Link }}" target="_blank">Click For Link</a>
@@ -97,6 +100,7 @@
                 <th onclick="sortTable('Name', this)" class="${currentSortColumn === 'Name' ? currentSortOrder : ''}">Name</th>
                 <th onclick="sortTable('Price', this)" class="${currentSortColumn === 'Price' ? currentSortOrder : ''}">Price</th>
                 <th onclick="sortTable('Players', this)" class="${currentSortColumn === 'Players' ? currentSortOrder : ''}">Players</th>
+                <th onclick="sortTable('Want', this)" class="${currentSortColumn === 'Want' ? currentSortOrder : ''}">Want</th>
                 <th onclick="sortTable('PlayTime', this)" class="${currentSortColumn === 'PlayTime' ? currentSortOrder : ''}">Play Time</th>
                 <th>Link</th>
                 <th>Update</th>
@@ -110,6 +114,7 @@
                     <td>${game.Name}</td>
                     <td>$${game.Price}</td>
                     <td>${game.Players}</td>
+                    <td>${game.Want}</td>
                     <td>${game.PlayTime} Minutes</td>
                     <td><a href="${game.Link}" target="_blank">Click For Link</a></td>
                     <td>

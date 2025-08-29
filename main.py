@@ -15,6 +15,7 @@ class boardgames(db.Model):
     Name = db.Column(db.String(20))
     Price = db.Column(db.Integer)
     Players = db.Column(db.String(10))
+    Want = db.Column(db.Integer)
     PlayTime = db.Column(db.Integer)
     Link = db.Column(db.String(200))
 
@@ -30,10 +31,9 @@ def sort_games():
     else:
         results = boardgames.query.order_by(sort_column.desc()).all()
 
-    games = [{'ID': game.ID, 'Name': game.Name, 'Price': game.Price, 'Players': game.Players, 'PlayTime': game.PlayTime,
+    games = [{'ID': game.ID, 'Name': game.Name, 'Price': game.Price, 'Players': game.Players, 'Want': game.Want, 'PlayTime': game.PlayTime,
               'Link': game.Link} for game in results]
     return jsonify(games)
-
 
 @app.route('/search', methods=['POST'])
 def search():
@@ -42,7 +42,7 @@ def search():
         results = boardgames.query.filter(boardgames.Name.ilike(f'%{search_term}%')).all()
     else:
         results = boardgames.query.all()
-    games = [{'ID': game.ID, 'Name': game.Name, 'Price': game.Price, 'Players': game.Players, 'PlayTime': game.PlayTime,
+    games = [{'ID': game.ID, 'Name': game.Name, 'Price': game.Price, 'Players': game.Players, 'Want': game.Want, 'PlayTime': game.PlayTime,
               'Link': game.Link} for game in results]
     return jsonify(games)
 
@@ -53,12 +53,14 @@ def create():
         Name = request.form['Name']
         Price = request.form['Price']
         Players = request.form['Players']
+        Want = request.form['Want']
         PlayTime = request.form['PlayTime']
         Link = request.form['Link']
 
         temp = boardgames(Name=Name,
                           Price=Price,
                           Players=Players,
+                          Want=Want,
                           PlayTime=PlayTime,
                           Link=Link
                           )
@@ -89,12 +91,14 @@ def update(gameID):
         Name = request.form['Name']
         Price = request.form['Price']
         Players = request.form['Players']
+        Want = request.form['Want']
         PlayTime = request.form['PlayTime']
         Link = request.form['Link']
 
         results.Name = Name
         results.Price = Price
         results.Players = Players
+        results.Want = Want
         results.PlayTime = PlayTime
         results.Link = Link
 
